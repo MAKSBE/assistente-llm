@@ -42,24 +42,27 @@ llm/
 
 1. **Clone o repositório:**
    ```sh
-   git clone <URL_DO_REPOSITORIO>
+   git clone git clone https://github.com/MAKSBE/assistente-llm.git
    cd llm
    ```
 
 2. **Configure variáveis de ambiente (opcional):**
    - Você pode definir `OLLAMA_BASE_URL` e `MODEL_NAME` conforme necessário, ou usar os padrões do sistema.
+   - O container já irá subir com as variáveis configuradas. 
 
 3. **Suba os containers:**
    ```sh
    docker-compose up --build
    ```
    Isso irá iniciar todos os serviços: backend, ingest, ollama e frontend.
+   Ao iniciar os containers serão baixadas e instaladas todas as dependências.
 
-4. **Acesse a interface:**
-   - Abra o navegador e acesse `http://localhost:8080` (ou a porta configurada no frontend).
+5. **Acesse a interface:**
+   - Abra o navegador e acesse `http://localhost:8000/frontend/index.html` (ou a porta configurada no frontend).
 
-5. **Utilize a API:**
+6. **Utilize a API:**
    - O backend expõe endpoints para consulta ao modelo e ingestão de documentos.
+   - Endereço Swagger - `http://localhost:8000/docs`
    - Exemplo de uso do endpoint de consulta (via `curl`):
      ```sh
      curl -X POST http://localhost:8000/api/query -H "Content-Type: application/json" -d '{"prompt": "Explique o que é LLM."}'
@@ -74,5 +77,37 @@ llm/
 
 ## Dicas e Boas Práticas
 
-- Consulte a pasta `docs/` para padrões de código, práticas recomendadas e exemplos de uso.
-- Para adicionar novos modelos ou alterar configurações, edite as variáveis de ambiente e os arquivos de configuração dos containers. 
+- Consulte a pasta `docs/` para inserir padrões de código, práticas recomendadas e exemplos de uso.
+
+## Melhorias
+
+## 1. Otimização de Recursos
+- Ajustar a configuração dos containers para consumir menos memória e CPU, garantindo que o LLM rode bem em máquinas pessoais ou servidores locais.
+- Permitir fácil troca de modelos (ex: CodeLlama, Mistral) via variáveis de ambiente ou interface.
+- Buscar modelo de linguagem mais eficiênte para desenvolvedores.
+- 
+## 2. Interface de Administração Local
+- Criar uma interface web simples para monitorar o status dos serviços, logs e uso de recursos.
+- Adicionar opções para reiniciar serviços ou atualizar modelos sem precisar acessar o terminal.
+
+## 3. Facilidade de Instalação
+- Fornecer scripts que automatize a instalação do Docker e a configuração inicial.
+- Documentar requisitos mínimos de hardware para rodar o projeto localmente.
+
+## 4. Backup e Restauração
+- Implementar mecanismos para backup e restauração dos dados e embeddings locais.
+- Permitir exportar/importar configurações e documentos.
+
+## 5. Segurança Local
+- Mesmo em ambiente local, proteger a interface e a API com autenticação simples (ex: senha única).
+- Implementar logs de acesso para auditoria.
+
+## 6. Atualização Simples
+- Fornecer um comando ou script para atualizar facilmente o projeto e os modelos, sem perder dados locais.
+
+## 7. Customização
+- Permitir ao usuário customizar prompts, contexto e parâmetros do modelo via interface ou arquivo de configuração.
+
+## 8. Desempenho
+- Implementar cache local para respostas frequentes.
+- Permitir configurar o tamanho do contexto e batch de embeddings para otimizar o desempenho. 
