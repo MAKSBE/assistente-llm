@@ -23,8 +23,8 @@ def query_mistral(prompt, context=""):
             "temperature": 0.1,        # Mais focado e determinístico
             "top_p": 0.9,              # Controle de diversidade
             "top_k": 40,               # Limita escolhas de tokens
-            "repeat_penalty": 1.15,     # Evita repetição
-            "num_predict": 1024,        # Aumentado para permitir respostas mais longas
+            "repeat_penalty": 1.15,    # Evita repetição
+            "num_predict": 1024,       # Aumentado para permitir respostas mais longas
             "num_ctx": 4096,           # Contexto menor
             "stop": ["\n\n###", "User:", "Human:", "Pergunta:"] # Para parar em perguntas
         }
