@@ -2,7 +2,7 @@ import requests
 import os
 
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://ollama:11434")
-MODEL_NAME = os.getenv("MODEL_NAME", "codellama:7b-code")
+MODEL_NAME = os.getenv("MODEL_NAME", "codellama:7b-instruct")
 
 def query_mistral(prompt, context=""):
     # Prompt otimizado para C#/.NET
@@ -21,12 +21,12 @@ def query_mistral(prompt, context=""):
         "stream": False,
         "options": {
             "temperature": 0.1,        # Mais focado e determinístico
-            "top_p": 0.8,              # Controle de diversidade
-            "top_k": 20,               # Limita escolhas de tokens
-            "repeat_penalty": 1.1,     # Evita repetição
-            "num_predict": 512,        # Aumentado para permitir respostas mais longas
-            "num_ctx": 2048,           # Contexto menor
-            "stop": ["\n\nQuestion:", "\n\nPergunta:", "Human:", "User:"]  # Para parar em perguntas
+            "top_p": 0.9,              # Controle de diversidade
+            "top_k": 40,               # Limita escolhas de tokens
+            "repeat_penalty": 1.15,     # Evita repetição
+            "num_predict": 1024,        # Aumentado para permitir respostas mais longas
+            "num_ctx": 4096,           # Contexto menor
+            "stop": ["\n\n###", "User:", "Human:", "Pergunta:"] # Para parar em perguntas
         }
     }
     

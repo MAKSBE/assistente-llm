@@ -12,11 +12,11 @@ done
 echo "Servidor Ollama ativo. Verificando modelo..."
 
 # Baixa o modelo se ainda não estiver disponível
-if ! curl --silent http://localhost:11434/api/tags | grep -q "codellama:7b-code"; then
-  echo "Modelo 'codellama:7b-code' não encontrado. Fazendo o download..."
-  ollama pull codellama:7b-code
+if ! curl --silent http://localhost:11434/api/tags | grep -q "codellama:7b-instruct"; then
+  echo "Modelo 'codellama:7b-instruct' não encontrado. Fazendo o download..."
+  ollama pull codellama:7b-instruct
 else
-  echo "Modelo 'codellama:7b-code' já está disponível."
+  echo "Modelo 'codellama:7b-instruct' já está disponível."
 fi
 
 echo "Tudo pronto com Ollama!"
