@@ -1,1 +1,0 @@
-# Coloque aqui sua documentação de padrões, exemplos de código, etc.
