@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>dotnet-assistant</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
+  <style>
+    body {
+      background: #181a1b;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #f1f3f6;
+    }
+    .container-assistant {
+      background: #23272b;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+      padding: 2.5rem 2rem;
+      max-width: 600px;
+      width: 100%;
+    }
+    .response-area {
+      background: #181a1b;
+      border-radius: 8px;
+      padding: 1.2rem;
+      min-height: 80px;
+      font-family: 'Fira Mono', 'Consolas', monospace;
+      white-space: pre-wrap;
+      margin-top: 1rem;
+      color: #e0e0e0;
+      border: 1px solid #343a40;
+      overflow-x: auto;
+    }
+    .form-control, .form-control:focus {
+      background: #181a1b;
+      color: #f1f3f6;
+      border: 1px solid #343a40;
+    }
+    .form-label {
+      color: #f1f3f6;
+    }
+    .btn-primary {
+      background: #0d6efd;
+      border: none;
+    }
+    .btn-primary:active, .btn-primary:focus, .btn-primary:hover {
+      background: #0b5ed7;
+    }
+    .alert-danger {
+      background: #842029;
+      color: #fff;
+      border: none;
+    }
+    .spinner-border {
+      width: 2rem;
+      height: 2rem;
+    }
+    h2, h5 {
+      color: #f1f3f6;
+    }
+    pre, code {
+      font-family: 'Fira Mono', 'Consolas', monospace;
+      font-size: 1em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container-assistant">
+    <h2 class="mb-4 text-center">dotnet-assistant</h2>
+    <div class="mb-3">
+      <label for="question" class="form-label">Pergunta</label>
+      <textarea id="question" class="form-control" rows="4" placeholder="Descreva sua dúvida sobre .NET... (Ctrl+Enter para nova linha)" autofocus></textarea>
+    </div>
+    <div class="d-grid gap-2 mb-3">
+      <button id="ask-btn" class="btn btn-primary btn-lg" onclick="ask()">Enviar</button>
+    </div>
+    <div id="error-message" class="alert alert-danger d-none" role="alert"></div>
+    <div id="loading" class="text-center d-none">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Consultando...</span>
+      </div>
+      <div>Consultando...</div>
+    </div>
+    <h5 class="mt-4">Resposta:</h5>
+    <div id="response" class="response-area"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+  <script>
+    const questionInput = document.getElementById("question");
+    const responseDiv = document.getElementById("response");
+    const button = document.getElementById("ask-btn");
+    const loading = document.getElementById("loading");
+    const errorMsg = document.getElementById("error-message");
+
+    questionInput.addEventListener("keydown", function(e) {
+      if (e.key === "Enter" && !e.ctrlKey) {
+        e.preventDefault();
+        ask();
+      }
+    });
+
+    async function ask() {
+      const question = questionInput.value.trim();
+      errorMsg.classList.add("d-none");
+      responseDiv.innerHTML = "";
+      if (!question) {
+        errorMsg.innerText = "Digite uma pergunta antes de enviar.";
+        errorMsg.classList.remove("d-none");
+        return;
+      }
+      button.disabled = true;
+      loading.classList.remove("d-none");
+      try {
+        const res = await fetch("http://localhost:8000/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question })
+        });
+        if (!res.ok) {
+          throw new Error(`Erro HTTP ${res.status}`);
+        }
+        const data = await res.json();
+        // Renderiza Markdown e aplica highlight
+        const html = marked.parse(data.response || "Nenhuma resposta recebida.");
+        responseDiv.innerHTML = html;
+        document.querySelectorAll('#response pre code').forEach((el) => {
+          hljs.highlightElement(el);
+        });
+        responseDiv.scrollIntoView({ behavior: "smooth" });
+      } catch (err) {
+        errorMsg.innerText = "Erro ao consultar a API: " + err.message;
+        errorMsg.classList.remove("d-none");
+      } finally {
+        button.disabled = false;
+        loading.classList.add("d-none");
+      }
+    }
+  </script>
+</body>
+</html>
+

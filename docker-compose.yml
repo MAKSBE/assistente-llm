@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    volumes:
+      - ./docs:/app/docs
+    ports:
+      - "8000:8000"
+    environment:
+      - MODEL_NAME=codellama:7b-code
+      - OLLAMA_BASE_URL=http://ollama:11434
+    depends_on:
+      - chroma
+      - ollama
+
+  chroma:
+    image: chromadb/chroma
+    ports:
+      - "8001:8000"
+    volumes:
+      - chroma-data:/chroma
+
+  ingest:
+    build: ./ingest
+    volumes:
+      - ./docs:/app/docs
+    depends_on:
+      - chroma
+
+  ollama:
+    build: ./ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+
+volumes:
+  chroma-data:
+  ollama-data:
+

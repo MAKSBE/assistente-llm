@@ -1,0 +1,18 @@
+import requests
+import os
+
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://ollama:11434")
+MODEL_NAME = os.getenv("MODEL_NAME", "codellama:7b-code")
+
+def query_mistral(prompt, context=""):
+    payload = {
+        "model": MODEL_NAME,
+        "prompt": f"{context}\n\nPergunta: {prompt}\nResposta:",
+        "stream": False
+    }
+    try:
+        res = requests.post(f"{OLLAMA_BASE_URL}/api/generate", json=payload)
+        return res.json().get("response", "")
+    except Exception as e:
+        return f"Erro ao consultar modelo: {str(e)}"
+
