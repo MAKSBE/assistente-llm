@@ -1,113 +1,148 @@
-# Documentação do Projeto LLM
+# 🧠 Projeto: Assistente de IA Local com LLM + Docker + Python
 
-## Visão Geral
+## 📌 Visão Geral
 
-Este projeto é uma solução baseada em LLM (Large Language Model) que utiliza containers Docker para orquestrar diferentes componentes, incluindo backend, frontend, ingestão de dados e integração com modelos de linguagem (ex: Ollama/Mistral). O objetivo é fornecer uma interface para consulta e manipulação de dados utilizando modelos de linguagem natural.
+Este projeto implementa um assistente de IA baseado em **Large Language Models (LLM)**, rodando 100% localmente, com orquestração via **Docker**.
 
-## Estrutura do Projeto
+Ele inclui:
+
+- Backend em Python (FastAPI)
+- Frontend web simples
+- Ingestão e embedding de documentos
+- Integração com modelos como **Mistral** e **CodeLlama** via **Ollama**
+
+O objetivo é fornecer uma solução privada e customizável para consultas e manipulação de dados com IA generativa.
+
+---
+
+## 🗂️ Estrutura do Projeto
 
 ```
 llm/
-  backend/         # API backend em Python
-  frontend/        # Interface web (HTML)
-  ingest/          # Scripts para ingestão e embedding de documentos
-  ollama/          # Configuração do container do Ollama
+  backend/         # API backend em Python (FastAPI)
+  frontend/        # Interface web HTML/JS
+  ingest/          # Scripts de ingestão e embedding de documentos
+  ollama/          # Configuração do container com LLM
   docker-compose.yml
   docs/            # Documentação e boas práticas
 ```
 
-### Principais Componentes
+---
 
-- **backend/**: API em Python responsável por receber requisições, consultar o modelo de linguagem e retornar respostas.
-- **frontend/**: Interface web simples para interação com o backend.
-- **ingest/**: Scripts para processar e embutir documentos no sistema.
-- **ollama/**: Configuração para rodar o modelo de linguagem (ex: Mistral, CodeLlama) via Ollama.
-- **docker-compose.yml**: Orquestra todos os serviços necessários usando Docker.
+## ⚙️ Principais Componentes
 
-## Funcionalidades
+### 🔹 `backend/`
+API FastAPI que expõe endpoints para consultas ao LLM e serve o frontend.
 
-- Consulta a modelos de linguagem (ex: Mistral, CodeLlama) via API REST.
-- Ingestão e embedding de documentos para enriquecer o contexto das respostas.
-- Interface web para facilitar a interação com o sistema.
-- Arquitetura modular e baseada em containers, facilitando a escalabilidade e manutenção.
+### 🔹 `frontend/`
+Interface web simples e responsiva (tema escuro), construída em HTML e JS puro.
 
-## Como Rodar o Projeto
+### 🔹 `ingest/`
+Scripts em Python usando LangChain e ChromaDB para gerar embeddings a partir de documentos da pasta `docs/`.
 
-### Pré-requisitos
+### 🔹 `ollama/`
+Configuração Docker para execução local de modelos via Ollama, como **Mistral** e **CodeLlama**.
 
-- Docker e Docker Compose instalados
+### 🔹 `docker-compose.yml`
+Orquestra todos os serviços automaticamente com um único comando.
+
+---
+
+## 🚀 Funcionalidades
+
+- Consulta a LLMs locais via API REST
+- Enriquecimento do contexto com RAG (Retrieval-Augmented Generation)
+- Interface web para interação
+- Execução local e offline com Docker
+
+---
+
+## 🧪 Como Rodar o Projeto
+
+### ✅ Pré-requisitos
+
+- Docker e Docker Compose instalados  
 - (Opcional) Python 3.8+ para rodar scripts manualmente
 
-### Passos
+### 📦 Passos para execução
 
-1. **Clone o repositório:**
-   ```sh
-   git clone git clone https://github.com/MAKSBE/assistente-llm.git
-   cd llm
-   ```
+```bash
+# Clone o repositório
+git clone https://github.com/MAKSBE/assistente-llm.git
+cd assistente-llm
 
-2. **Configure variáveis de ambiente (opcional):**
-   - Você pode definir `OLLAMA_BASE_URL` e `MODEL_NAME` conforme necessário, ou usar os padrões do sistema.
-   - O container já irá subir com as variáveis configuradas. 
+# (Opcional) Configure variáveis de ambiente
+export OLLAMA_BASE_URL=http://localhost:11434
+export MODEL_NAME=mistral
 
-3. **Suba os containers:**
-   ```sh
-   docker-compose up --build
-   ```
-   Isso irá iniciar todos os serviços: backend, ingest, ollama e frontend.
-   Ao iniciar os containers serão baixadas e instaladas todas as dependências.
+# Suba os containers
+docker-compose up --build
+```
 
-5. **Acesse a interface:**
-   - Abra o navegador e acesse `http://localhost:8000/frontend/index.html` (ou a porta configurada no frontend).
+### 🌐 Acesse:
 
-6. **Utilize a API:**
-   - O backend expõe endpoints para consulta ao modelo e ingestão de documentos.
-   - Endereço Swagger - `http://localhost:8000/docs`
-   - Exemplo de uso do endpoint de consulta (via `curl`):
-     ```sh
-     curl -X POST http://localhost:8000/api/query -H "Content-Type: application/json" -d '{"prompt": "Explique o que é LLM."}'
-     ```
+- Interface Web: [http://localhost:8000/frontend/index.html](http://localhost:8000/frontend/index.html)  
+- Swagger da API: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-## Estrutura dos Principais Arquivos
+### 💬 Exemplo de uso via `curl`
 
-- `backend/main.py`: Inicializa a API e define os endpoints.
-- `backend/mistral_client.py`: Cliente para consulta ao modelo de linguagem via Ollama.
-- `ingest/embed_docs.py`: Script para processar e embutir documentos.
-- `docker-compose.yml`: Orquestra todos os serviços necessários.
+```bash
+curl -X POST http://localhost:8000/api/query \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "Explique o que é LLM."}'
+```
 
-## Dicas e Boas Práticas
+---
 
-- Consulte a pasta `docs/` para inserir padrões de código, práticas recomendadas e exemplos de uso.
+## 🧾 Estrutura de Arquivos Relevantes
 
-## Melhorias
+- `backend/main.py`: Inicialização da API e rotas
+- `backend/mistral_client.py`: Cliente para comunicação com Ollama
+- `ingest/embed_docs.py`: Geração de embeddings com LangChain + ChromaDB
+- `docker-compose.yml`: Orquestração dos serviços
 
-## 1. Otimização de Recursos
-- Ajustar a configuração dos containers para consumir menos memória e CPU, garantindo que o LLM rode bem em máquinas pessoais ou servidores locais.
-- Permitir fácil troca de modelos (ex: CodeLlama, Mistral) via variáveis de ambiente ou interface.
-- Buscar modelo de linguagem mais eficiênte para desenvolvedores.
-- 
-## 2. Interface de Administração Local
-- Criar uma interface web simples para monitorar o status dos serviços, logs e uso de recursos.
-- Adicionar opções para reiniciar serviços ou atualizar modelos sem precisar acessar o terminal.
+---
 
-## 3. Facilidade de Instalação
-- Fornecer scripts que automatize a instalação do Docker e a configuração inicial.
-- Documentar requisitos mínimos de hardware para rodar o projeto localmente.
+## 🛠️ Boas Práticas
 
-## 4. Backup e Restauração
-- Implementar mecanismos para backup e restauração dos dados e embeddings locais.
-- Permitir exportar/importar configurações e documentos.
+- Separação clara de responsabilidades (camadas Domain, Application, Infra, API)
+- Uso de DTOs (nunca exponha entidades diretamente)
+- Injeção de dependência e testes facilitados
+- Validações centralizadas
+- Prompts otimizados e configuráveis
+- Documentação na pasta `docs/`
 
-## 5. Segurança Local
-- Mesmo em ambiente local, proteger a interface e a API com autenticação simples (ex: senha única).
-- Implementar logs de acesso para auditoria.
+---
 
-## 6. Atualização Simples
-- Fornecer um comando ou script para atualizar facilmente o projeto e os modelos, sem perder dados locais.
+## 📈 Melhorias Planejadas
 
-## 7. Customização
-- Permitir ao usuário customizar prompts, contexto e parâmetros do modelo via interface ou arquivo de configuração.
+### 🔧 Otimização de Recursos
+- Ajustar containers para rodar em máquinas pessoais
+- Permitir troca rápida de modelos via `.env`
 
-## 8. Desempenho
-- Implementar cache local para respostas frequentes.
-- Permitir configurar o tamanho do contexto e batch de embeddings para otimizar o desempenho. 
+### 📊 Interface de Administração
+- Painel web para status, logs, memória, CPU e restart de serviços
+
+### ⚡ Instalação Facilitada
+- Script para instalar Docker e configurar ambiente automaticamente
+- Requisitos mínimos de hardware documentados
+
+### 💾 Backup e Restauração
+- Exportação/importação de embeddings e documentos
+- Salvamento das configurações locais
+
+### 🔐 Segurança
+- Autenticação com senha única
+- Logs de acesso para auditoria
+
+### 🔁 Atualização Simplificada
+- Script para atualizar código e modelos sem perda de dados
+
+### 🎛️ Customização
+- Permitir ajuste de prompts, contexto e temperatura do modelo via interface
+
+### 🚀 Performance
+- Cache local para perguntas frequentes
+- Controle do tamanho de chunk/contexto
+
+---
